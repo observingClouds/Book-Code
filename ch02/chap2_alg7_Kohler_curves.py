@@ -35,7 +35,8 @@ if option == 1:
     dry_size_list = [50.0,100.0,250.0] #nm
     # Initialise a figure canvas to plot on
     plt.figure()
-    for size in dry_size_list:
+    colors=['r','g','b']
+    for s, size in enumerate(dry_size_list):
 
         mass_particle = (4.0/3.0)*np.pi*\
         np.power((0.5*size*1.0e-9),3.0)*density_solute #kg
@@ -45,6 +46,8 @@ if option == 1:
 
         # Initialise a list of saturation ratios, Sw
         Sw_list = []
+        Kelvin_list = []
+        Raoult_list = []
         droplet_size_list =[]
         # Now iterative through droplet sizes. To do this we add 1nm to the
         # initial dry particle size until we reach 10'000nm.
@@ -56,20 +59,26 @@ if option == 1:
             droplet_size_list.append(Dp)
 
             # Call the Kohler_curve function
-            Sw=Kohler_theory_modules.Kohler_curve(\
+            Raoult, Kelvin=Kohler_theory_modules.Kohler_curve(\
                 Dp,Temp_K,moles_solute,\
                 diss_num,molar_vol_solute,\
                 molar_vol_water,density_solute,\
                 density_water,molar_weight_water,\
                 surf_tens,R_gas)
-            Sw_list.append(Sw)
+            Sw_list.append(Raoult*Kelvin)
+            Kelvin_list.append(Kelvin)
+            Raoult_list.append(Raoult)
 
             droplet_size=droplet_size+1.0
 
         # Plot the results on the figure
         # Note we are plotting supersaturation levels
         plt.plot(np.array(droplet_size_list),
-        (np.array(Sw_list)-1.0)*100.0,label='%s nm' % size)
+        (np.array(Sw_list)-1.0)*100,label='%s nm' % size, color=colors[s])
+        plt.plot(np.array(droplet_size_list),
+        (np.array(Kelvin_list)-1.0)*100, color='k')
+        plt.plot(np.array(droplet_size_list),
+        (np.array(Raoult_list)-1.0)*100, linestyle='--', color=colors[s])
     # Constrain the y axis to show supersaturation
     plt.xscale('log')
     plt.ylim(-0.3, 0.5)
