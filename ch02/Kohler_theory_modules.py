@@ -26,9 +26,9 @@ def Kohler_curve(Dp,Temp_K,moles_solute,diss_num,molar_vol_solute,
     Kelvin = np.exp((4.0*(molar_weight_water*1.0e-3)*surf_tens)/
              (R_gas*Temp_K*density_water*Dp))
     # Calculate the equilibrium saturation ratio
-    Sw = Kelvin*X_w
+    Sw = Kelvin * X_w
 
-    return Sw
+    return X_w, Kelvin
 
 def Kohler_curve_min(Dp,Temp_K,moles_solute,diss_num,molar_vol_solute,
     molar_vol_water,density_solute,density_water,
